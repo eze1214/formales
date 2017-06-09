@@ -15,14 +15,38 @@
 	)
 )
 
+;Importe cuando hago quiero agrupar valores de dos listas y voy agarrando de la 
+;cabeza utilizo list ya que trabajo con atomos y el const no funciona
+;porque necesitaria que el segundo asea una lista
+(defun construirAmbiente (variables valor amb)
+	(if (null (cdr variables))
+		(list (car variables) (evaluar (car valor) amb))
+		(append (list (car variables) (evaluar (car valor) amb)) 
+			(construirAmbiente (cdr variables) (cdr valor) amb))
+	)
+)
+
+(defun construirFuncion (exp)
+	(nth 2 (car exp))
+)
+
+(defun evaluarLambda (exp amb)
+		(evaluar (construirFuncion exp) (construirAmbiente (cadar exp) (cdr exp) amb))
+)
+
 (defun evaluar (exp amb)
 (if (atom exp)  
 	(if (numberp exp) exp
 		(if (null exp) nil 
-		(if (eq exp 't) t (buscarExpresionAmb exp amb))			
+			(if (eq exp 't) t (buscarExpresionAmb exp amb))			
 		)
 	)
-	(cond 
+	(cond
+		((listp (car exp))
+			(if (eq (caar exp) 'lambda)
+				(evaluarLambda exp amb)
+			)
+		)
 		((eq (car exp) 'quote) (cadr exp))
 		((eq (car exp) 'if) (if (evaluar (cadr exp) amb)
 								(evaluar (nth 2 exp) amb) 
@@ -39,9 +63,21 @@
 			(armarLista (cdr exp) amb)
 			)
 		((eq (car exp) 'car)
-			(car (evaluar (cdr exp) amb))
+			(car (evaluar (nth 1 exp) amb))
 			)
-		(t (car (evaluar (cdr exp) amb)))
+		((eq (car exp) 'cdr)
+			(cdr (evaluar (nth 1 exp) amb))
+		)
+		((eq (car exp) '+)
+			(+ (evaluar (nth 1 exp) amb)  (evaluar (nth 2 exp) amb) )
+		)
+		((eq (car exp) '-)
+			(- (evaluar (nth 1 exp) amb) (evaluar (nth 2 exp) amb) )
+		)
+		((eq (car exp) '*)
+			(* (evaluar (nth 1 exp) amb)  (evaluar (nth 2 exp) amb) )
+		)
+		(t exp)
 	)	
 )
 )
