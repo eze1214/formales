@@ -1,0 +1,27 @@
+(defun test 
+(evaluar '2 nil)
+(evaluar nil nil)
+(evaluar 't nil)
+(evaluar 'A '(A 2) )
+(evaluar 'B '(A 2 B 10))
+)
+
+
+(evaluar '2 nil)
+(evaluar '(quote A) nil)
+(evaluar '(quote 1) nil)
+(evaluar '(quote (car a)) nil )
+(evaluar '(quote ((2 3) (4 5))) nil)
+(evaluar '(and (or t nil) t) nil )
+(evaluar '(and (or t nil) (or nil nil)) nil)
+(evaluar '(or (or t nil) (or nil nil )) nil)
+(evaluar '(car (list a 2 3)) '(a 100) )
+(evaluar '(cdr (list a b c)) '(a 100 b 99 c 98) )
+(evaluar '((lambda (x) (* x 2)) 2) nil )
+(evaluar '((lambda (x y) (+ (* x 2) y)) 2 4) nil)
+(evaluar '(lambda (x) (* x 2)) nil)
+(evaluar '(mapcar (lambda (x) (cons x (cdr '(3 4 5)))) '(1 2 3)) nil)
+(evaluar '(mapcar 'numberp (quote (4))) '(t))
+(evaluar '(mapcar 'numberp (quote (4 5 6 nil))) nil)
+(evaluar '(mapcar 'car (quote ( (2 3) (4 5 ))) ))
+
